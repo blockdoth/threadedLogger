@@ -34,6 +34,13 @@ public class MonitoredJob {
     }
     public void setStateFatalError() {
         this.jobState = JobState.FATAL_ERROR;
+        finishTime = System.currentTimeMillis();
+        jobTime = finishTime - jobTime;
+        if(activeTask == null){
+            activeTask = "Encountered Fatal Error";
+        }else{
+            activeTask = activeTask + "(Error)";
+        }
     }
 
     public void setStateFinished() {
@@ -53,6 +60,9 @@ public class MonitoredJob {
 
     public boolean isFinished() {
         return jobState == JobState.FINISHED;
+    }
+    public boolean encounteredFatalError() {
+        return jobState == JobState.FATAL_ERROR;
     }
 
     public String getJobName() {
@@ -104,7 +114,7 @@ public class MonitoredJob {
     }
 
     public long getJobTime() {
-        if(!isFinished()){
+        if(!isFinished() && !encounteredFatalError()){
             return System.currentTimeMillis() - jobTime;
         }else{
             return jobTime;

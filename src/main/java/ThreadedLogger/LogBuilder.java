@@ -12,7 +12,7 @@ public class LogBuilder {
     private  int tripleColumnWidth = 2 * columnWidth;
     private  int totalWidth = 2 * columnWidth + 3 * doubleColumnWidth + tripleColumnWidth + 7;
 
-    private int prevLogLength = 0;
+    private int prevLogLength = totalWidth * 6;
     public String buildLog(JobsPool jobsPool){
         stringBuilder = new StringBuilder(prevLogLength);
         if(jobsPool.getTotalJobsCount() == 0){
@@ -23,7 +23,12 @@ public class LogBuilder {
         addHeaders();
         List<MonitoredJob> jobList = jobsPool.getJobs();
         for (MonitoredJob job: jobList) {
-            addRow(job);
+            try{
+                addRow(job);
+            } catch (Exception e){
+                System.out.println("Error while adding row: " + e.getMessage());
+                throw new RuntimeException(e);
+            }
         }
         addGeneralInfo(jobsPool);
         prevLogLength = stringBuilder.length();
@@ -97,6 +102,9 @@ public class LogBuilder {
 
 
     private  String centerBetween(String string, String delimiter, int width) {
+        if (string == null || delimiter == null) {
+            throw new IllegalArgumentException("String and delimiter cannot be null");
+        }
         int stringLength = string.length();
 
         if(stringLength > width){

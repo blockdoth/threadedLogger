@@ -19,17 +19,13 @@ public class ThreadedLogger {
             try {
                 LogBuilder logBuilder = new LogBuilder();
                 while (true) {
-                    try {
-                        Thread.sleep(400);
-                    } catch (InterruptedException e) {
-                        throw new InterruptedException(e.getMessage());
-                    }
+                    Thread.sleep(400);
                     lock.lock();
                     long startTime = System.currentTimeMillis();
                     System.out.println(logBuilder.buildLog(jobsPool));
                     long endTime = System.currentTimeMillis();
                     long timeElapsed = endTime - startTime;
-                    System.out.println("Time elapsed: " + timeElapsed + "ms");
+                    //System.out.println("Time elapsed: " + timeElapsed + "ms");
                     lock.unlock();
                 }
             } catch (Exception e) {

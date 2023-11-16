@@ -58,7 +58,7 @@ public class JobsPool {
             totalTime += job.getJobTime();
             errorCount += job.getErrorCount();
         }
-        if(finishedJobsCount == allJobs.size()){
+        if(finishedJobsCount + fatalErrorCount == allJobs.size()){
             if(!allJobsFinished){
                 allJobsFinishedTime = System.currentTimeMillis() - startTime;
             }

@@ -28,15 +28,16 @@ public class Worker implements Runnable {
         int threadId = (int) Thread.currentThread().threadId();
         logger.init(jobName, threadId, taskCount);
 
-        if(Math.random() > 0.99){
-            logger.reportFatalError(threadId, "Fatal Error ");
-            throw new RuntimeException("Fatal error");
-        }
-        if(Math.random() > 0.90){
-            logger.reportError(threadId, "Error ");
-        }
         for (int i = 0; i < taskCount; i++) {
             logger.startNewTask(threadId, taskList.get(i));
+            if(Math.random() > 0.999){
+                logger.reportFatalError(threadId, "Fatal Error ");
+                throw new RuntimeException("Encountered fatal error");
+            }
+            if(Math.random() > 0.99){
+                logger.reportError(threadId, "Encountered error ");
+            }
+
             try {
                 Thread.sleep(Math.min(minTimePerTask,(int) (maxTimePerTask * Math.random())));
             } catch (InterruptedException e) {
