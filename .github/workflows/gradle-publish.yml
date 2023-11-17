@@ -1,0 +1,18 @@
+name: Publish workflow
+
+on:
+  workflow_dispatch:
+  pull_request:
+    types: [ closed ]
+
+permissions: # added using https://github.com/step-security/secure-workflows
+  contents: read
+
+jobs:
+
+  build-and-publish:
+    permissions:
+      contents: write
+      packages: write
+    uses: wenqiglantz/reusable-workflows-modules/.github/workflows/java-maven-publish.yml@main
+    secrets: inherit
