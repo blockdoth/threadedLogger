@@ -1,0 +1,19 @@
+<project>
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>pepijn.van.egmond</groupId>
+    <artifactId>threadedLogger</artifactId>
+    <version>1</version>
+
+    <scm>
+        <developerConnection>scm:git:https://github.com/PepijnVanEgmond/threadedLogger.git</developerConnection>
+    </scm>
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub</name>
+            <url>https://maven.pkg.github.com/PepijnVanEgmond/threadedLogger</url>
+        </repository>
+    </distributionManagement>
+
+</project>
