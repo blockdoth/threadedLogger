@@ -2,8 +2,9 @@ name: Publish workflow
 
 on:
   workflow_dispatch:
-  pull_request:
-    types: [ closed ]
+  push:
+      branches:
+      - master
 
 permissions: # added using https://github.com/step-security/secure-workflows
   contents: read

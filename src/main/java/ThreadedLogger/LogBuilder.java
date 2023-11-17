@@ -12,15 +12,13 @@ class LogBuilder {
     private final int tripleColumnWidth = 2 * columnWidth;
     private final int totalWidth = 2 * columnWidth + 3 * doubleColumnWidth + tripleColumnWidth + 7;
 
-    private int prevLogLength = totalWidth * 6;
+    private int prevLogLength = totalWidth * 9;
 
-    public String buildLog(JobsPool jobsPool) {
+    public String buildLog(JobsPool jobsPool, String globalLog) {
         stringBuilder = new StringBuilder(prevLogLength);
-        if (jobsPool.getTotalJobsCount() == 0) {
-            throw new RuntimeException("No jobs to log");
-        }
         jobsPool.updateJobsInfo();
         addSpaces(10);
+        addGlobalLogging(globalLog);
         addHeaders();
         List<MonitoredJob> jobList = jobsPool.getJobs();
         for (MonitoredJob job : jobList) {
@@ -36,6 +34,12 @@ class LogBuilder {
         return stringBuilder.toString();
     }
 
+
+    private void addGlobalLogging(String globalLog) {
+        appendLine(totalWidth);
+        append(centerBetween(globalLog, columnDelimeter, totalWidth - 2));
+        append("|\n");
+    }
 
     public void addHeaders() {
         appendLine(totalWidth);

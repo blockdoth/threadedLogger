@@ -9,6 +9,7 @@ public class ThreadedLogger {
 
 
     private final JobsPool jobsPool;
+    private String globalLog = "Log";
     private final ExecutorService logThread = Executors.newSingleThreadExecutor();
     private final Lock lock = new ReentrantLock();
 
@@ -28,10 +29,14 @@ public class ThreadedLogger {
             try {
                 LogBuilder logBuilder = new LogBuilder();
                 while (true) {
+                    if(jobsPool.isEmpty()){
+                        Thread.sleep(100);
+                        continue;
+                    }
                     Thread.sleep(updateDelay);
                     lock.lock();
                     long startTime = System.currentTimeMillis();
-                    System.out.println(logBuilder.buildLog(jobsPool));
+                    System.out.println(logBuilder.buildLog(jobsPool, globalLog));
                     long endTime = System.currentTimeMillis();
                     long timeElapsed = endTime - startTime;
                     //System.out.println("Time elapsed: " + timeElapsed + "ms");
@@ -91,6 +96,13 @@ public class ThreadedLogger {
      */
     public void log(long threadID, String taskName) {
         jobsPool.get(threadID).setActiveTask(taskName);
+    }
+
+    /**
+     * Publishes a global log that is displayed above the jobs
+     */
+    public void logGlobal(String globalLog) {
+        this.globalLog = globalLog;
     }
 
     /**

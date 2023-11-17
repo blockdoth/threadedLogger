@@ -132,5 +132,8 @@ class JobsPool {
         }
     }
 
+    public boolean isEmpty() {
+        return jobsMap.isEmpty();
+    }
 }
 

@@ -14,6 +14,11 @@ public class Main {
         int maxTimePerTask = 2000;
 
         ThreadedLogger logger = new ThreadedLogger();
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         JobRunner jobRunner = new JobRunner(logger, threadCount,minTasks, maxTasks, minTimePerTask,maxTimePerTask);
         jobRunner.runTasks(totalTasks);
     }

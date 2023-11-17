@@ -26,7 +26,7 @@ public class JobRunner {
 
     public void runTasks(int totalTasks) {
         List<Worker> workers = generateRandomTasks(totalTasks);
-        System.out.println("Starting " + workers.size() + " jobs");
+        logger.logGlobal("Starting " + workers.size() + " jobs");
         for (Worker worker : workers) {
             executorService.submit(worker);
         }
