@@ -1,24 +1,39 @@
 package ThreadedLogger;
 
-public class MonitoredJob {
+class MonitoredJob {
 
 
-    private JobState jobState;
     public String jobName;
     public int taskCount;
     public int errorCount = 0;
-    private int ownerThread;
-    int tasksCompleted = 0;
     public String activeTask;
-    private String jobInfo = "Operating Normally";
+    int tasksCompleted = 0;
     long jobTime = 0;
     long finishTime;
+    private JobState jobState;
+    private int ownerThread;
+    private String jobInfo = "Operating Normally";
 
 
     public MonitoredJob(String jobName, int taskCount) {
         this.jobName = jobName;
         this.taskCount = taskCount;
         this.jobTime = System.currentTimeMillis();
+    }
+
+    public static String formatJobTime(long jobDuration) {
+        long millis = (jobDuration % 1000) / 10;
+        long second = (jobDuration / 1000) % 60;
+        long minute = (jobDuration / (1000 * 60)) % 60;
+
+        if (minute > 0) {
+            return String.format("%02d:%02d.%02d", minute, second, millis);
+        } else if (second > 0) {
+            return String.format("%02d.%02d", second, millis);
+        } else {
+            return String.format("0.%03d", millis);
+        }
+
     }
 
     public JobState getJobState() {
@@ -32,13 +47,14 @@ public class MonitoredJob {
     public void setStateActive() {
         this.jobState = JobState.ACTIVE;
     }
+
     public void setStateFatalError() {
         this.jobState = JobState.FATAL_ERROR;
         finishTime = System.currentTimeMillis();
         jobTime = finishTime - jobTime;
-        if(activeTask == null){
+        if (activeTask == null) {
             activeTask = "Encountered Fatal Error";
-        }else{
+        } else {
             activeTask = activeTask + "(Error)";
         }
     }
@@ -61,6 +77,7 @@ public class MonitoredJob {
     public boolean isFinished() {
         return jobState == JobState.FINISHED;
     }
+
     public boolean encounteredFatalError() {
         return jobState == JobState.FATAL_ERROR;
     }
@@ -81,62 +98,47 @@ public class MonitoredJob {
         errorCount++;
     }
 
-    public void setOwnerThread(int jobID) {
-        this.ownerThread = jobID;
-    }
-
     public int getOwnerThread() {
         return ownerThread;
+    }
+
+    public void setOwnerThread(int jobID) {
+        this.ownerThread = jobID;
     }
 
     public int getTasksCompleted() {
         return tasksCompleted;
     }
 
-    public void setActiveTask(String taskName) {
-        this.activeTask = taskName;
-    }
-
     public String getActiveTask() {
         return activeTask;
+    }
+
+    public void setActiveTask(String taskName) {
+        this.activeTask = taskName;
     }
 
     public void endActiveTask() {
         tasksCompleted++;
     }
 
-    public void setJobInfo(String jobInfo) {
-        this.jobInfo = jobInfo;
-    }
-
     public String getJobInfo() {
         return jobInfo;
     }
 
+    public void setJobInfo(String jobInfo) {
+        this.jobInfo = jobInfo;
+    }
+
     public long getJobTime() {
-        if(!isFinished() && !encounteredFatalError()){
+        if (!isFinished() && !encounteredFatalError()) {
             return System.currentTimeMillis() - jobTime;
-        }else{
+        } else {
             return jobTime;
         }
     }
 
     public String getJobTimeFormatted() {
         return formatJobTime(getJobTime());
-    }
-
-    public static String formatJobTime(long jobDuration){
-        long millis = (jobDuration % 1000) / 10;
-        long second = (jobDuration / 1000) % 60;
-        long minute = (jobDuration / (1000 * 60)) % 60;
-
-        if(minute > 0){
-            return String.format("%02d:%02d.%02d", minute, second, millis);
-        } else if (second > 0){
-            return String.format("%02d.%02d", second, millis);
-        } else{
-            return String.format("0.%03d", millis);
-        }
-
     }
 }
