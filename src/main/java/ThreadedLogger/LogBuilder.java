@@ -66,7 +66,8 @@ class LogBuilder {
 
     public void addGeneralInfo(JobsPool jobsPool) {
         appendLine(totalWidth);
-        append(centerBetween("Finished/Total jobs: " + jobsPool.getFinishedJobsCount() + "/" + jobsPool.getTotalJobsCount(), columnDelimeter, 2 * columnWidth + 1));
+        append(centerBetween("General Info", columnDelimeter, columnWidth));
+        append(centerBetween("Finished/Total jobs: " + jobsPool.getFinishedJobsCount() + "/" + jobsPool.getTotalJobsCount(), columnDelimeter, doubleColumnWidth));
         append(centerBetween(progressBar(jobsPool.getFinishedJobsCount(), jobsPool.getTotalJobsCount(), doubleColumnWidth - 8), columnDelimeter, doubleColumnWidth));
         append(centerBetween("Threads Waiting: " + jobsPool.getWaitingJobsCount(), columnDelimeter, doubleColumnWidth));
         append(centerBetween("Average/Total: " + jobsPool.getAverageTimeFormatted() + "/" + jobsPool.getTotalDuration(), columnDelimeter, doubleColumnWidth));
