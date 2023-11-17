@@ -16,5 +16,4 @@
         </repository>
     </distributionManagement>
 
-    <project.scm.id>github</project.scm.id>
 </project>
