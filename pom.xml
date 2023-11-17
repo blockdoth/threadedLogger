@@ -16,6 +16,8 @@
         </repository>
     </distributionManagement>
     <properties>
-        <maven.compiler.release>19</maven.compiler.release>
+        <java.version>19</java.version>
+        <maven.compiler.source>19</maven.compiler.source>
+        <maven.compiler.target>19</maven.compiler.target>
     </properties>
 </project>
