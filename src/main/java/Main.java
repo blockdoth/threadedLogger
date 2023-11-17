@@ -6,10 +6,10 @@ public class Main {
 
 
     public static void main(String[] args) {
-        int totalTasks = 100;
-        int threadCount = 10;
-        int minTasks = 15;
-        int maxTasks = 1;
+        int totalTasks = 3;
+        int threadCount = 3;
+        int minTasks = 10;
+        int maxTasks = 10;
         int minTimePerTask = 500;
         int maxTimePerTask = 2000;
 

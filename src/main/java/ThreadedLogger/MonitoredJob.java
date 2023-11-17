@@ -10,7 +10,7 @@ class MonitoredJob {
     int tasksCompleted = 0;
     long jobTime = 0;
     long finishTime;
-    private JobState jobState;
+    private JobState jobState = JobState.WAITING;
     private int ownerThread;
     private String jobInfo = "Operating Normally";
 
@@ -115,12 +115,13 @@ class MonitoredJob {
     }
 
     public void setActiveTask(String taskName) {
+        setStateActive();
         this.activeTask = taskName;
+        if(isActive()){
+            tasksCompleted++;
+        }
     }
 
-    public void endActiveTask() {
-        tasksCompleted++;
-    }
 
     public String getJobInfo() {
         return jobInfo;

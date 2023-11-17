@@ -50,7 +50,7 @@ public class ThreadedLogger {
      * @param threadID the ID of the thread that is going to run the job
      * @param taskCount the number of tasks in the job
      */
-    public void init(String jobName, int threadID, int taskCount) {
+    public void init(String jobName, long threadID, int taskCount) {
         MonitoredJob monitoredThread = new MonitoredJob(jobName, taskCount);
         monitoredThread.setStateActive();
         jobsPool.put(threadID, monitoredThread);
@@ -64,48 +64,53 @@ public class ThreadedLogger {
         jobsPool.setTotalJobs(totalJobs);
     }
 
-    /**
-     * Ends the active task
-     * @param threadID the ID of the thread that is running the task
-     */
-    public void endActiveTask(int threadID) {
-        jobsPool.get(threadID).endActiveTask();
-    }
 
     /**
      * Reports an recoverable error that was encountered while running a task
      * @param threadID the ID of the thread that is running the task
-     * @param errorName the name of the error that was encountered
+     * @param errorInfo the name of the error that was encountered
      */
-    public void reportError(int threadID, String errorName) {
-        jobsPool.reportError(threadID, errorName);
+    public void reportError(long threadID, String errorInfo) {
+        jobsPool.reportError(threadID, errorInfo);
     }
 
     /**
-     * Reports a fatal to the logger, only use this when the error prevents the task from continuing
+     * Reports a fatal error to the logger, only use this when the error prevents the task from continuing
      * @param threadID the ID of the thread that is running the task
-     * @param errorName the name of the error that was encountered
+     * @param errorInfo the name of the error that was encountered
      */
-    public void reportFatalError(int threadID, String errorName) {
-        jobsPool.reportFatalError(threadID, errorName);
+    public void reportFatalError(long threadID, String errorInfo) {
+        jobsPool.reportFatalError(threadID, errorInfo);
     }
 
 
     /**
      * Starts a new task
      * @param threadID the ID of the thread that is going to run the task
-     * @param jobName the name of the task that is going to be run
+     * @param taskName the name of the task that is going to be run
      */
-    public void startNewTask(int threadID, String jobName) {
-        jobsPool.get(threadID).setActiveTask(jobName);
+    public void log(long threadID, String taskName) {
+        jobsPool.get(threadID).setActiveTask(taskName);
     }
 
     /**
      * Finishes a task and stops the timer
      * @param threadID the ID of the thread that is running the task
      */
-    public void setFinished(int threadID) {
-        MonitoredJob job = jobsPool.get(threadID);
-        job.setStateFinished();
+    public void finish(long threadID) {
+        jobsPool.get(threadID).setStateFinished();
+    }
+
+    public void waiting(long threadID) {
+        jobsPool.get(threadID).setStateWaiting();
+    }
+
+    /**
+     * Use this for convenience, the ID of the thread that is running the task is automatically retrieved
+     * @return wrapper of the logger that is specific to the current thread
+     */
+    public LocalLogger getLocalLogger() {
+        return new LocalLogger(this);
+
     }
 }

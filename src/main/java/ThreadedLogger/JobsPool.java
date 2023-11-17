@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 class JobsPool {
     private final ConcurrentHashMap<Integer, MonitoredJob> jobsMap = new ConcurrentHashMap<>();
     private final ConcurrentHashMap.KeySetView<MonitoredJob, Boolean> allJobs = ConcurrentHashMap.newKeySet();
-    private final ConcurrentMap<Integer, Integer> threadIdMap = new ConcurrentHashMap<>();
+    private final ConcurrentMap<Long, Integer> threadIdMap = new ConcurrentHashMap<>();
     private final AtomicInteger threadIndexAtomic = new AtomicInteger(1);
     private int totalJobsCount = 0;
     private int waitingJobsCount = 0;
@@ -24,7 +24,7 @@ class JobsPool {
     private boolean allJobsFinished = false;
     private long allJobsFinishedTime = 0;
 
-    public void put(int threadID, MonitoredJob monitoredJob) {
+    public void put(long threadID, MonitoredJob monitoredJob) {
         int threadIndex;
         if (!threadIdMap.containsKey(threadID)) {
             threadIndex = threadIndexAtomic.getAndIncrement();
@@ -38,7 +38,7 @@ class JobsPool {
 
     }
 
-    public MonitoredJob get(int threadID) {
+    public MonitoredJob get(long threadID) {
         return jobsMap.get(threadIdMap.get(threadID));
     }
 
@@ -112,14 +112,14 @@ class JobsPool {
 
     }
 
-    public void reportError(int jobID, String errorName) {
-        MonitoredJob job = jobsMap.get(threadIdMap.get(jobID));
+    public void reportError(long threadID, String errorName) {
+        MonitoredJob job = jobsMap.get(threadIdMap.get(threadID));
         job.setJobInfo(errorName);
         job.increaseErrorCount();
     }
 
-    public void reportFatalError(int jobID, String errorName) {
-        MonitoredJob job = jobsMap.get(threadIdMap.get(jobID));
+    public void reportFatalError(long threadID, String errorName) {
+        MonitoredJob job = jobsMap.get(threadIdMap.get(threadID));
         job.setJobInfo(errorName);
         job.setStateFatalError();
     }
