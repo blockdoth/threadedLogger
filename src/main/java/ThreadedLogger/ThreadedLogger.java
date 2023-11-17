@@ -107,7 +107,7 @@ public class ThreadedLogger {
 
     /**
      * Use this for convenience, the ID of the thread that is running the task is automatically retrieved
-     * @return wrapper of the logger that is specific to the current thread
+     * @return wrapper of the logger that is specific to the current thread usability
      */
     public LocalLogger getLocalLogger() {
         return new LocalLogger(this);
