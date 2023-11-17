@@ -7,7 +7,7 @@ public class Main {
 
     public static void main(String[] args) {
         int totalTasks = 100;
-        int threadCount = 100;
+        int threadCount = 10;
         int minTasks = 15;
         int maxTasks = 1;
         int minTimePerTask = 500;

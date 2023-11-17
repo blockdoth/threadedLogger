@@ -1,16 +1,17 @@
 package ThreadedLogger;
 
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class JobsPool {
-    private ConcurrentHashMap<Integer, MonitoredJob> jobsMap = new ConcurrentHashMap<>();
-    private ConcurrentHashMap.KeySetView<MonitoredJob, Boolean> allJobs = ConcurrentHashMap.newKeySet();
-    private ConcurrentMap<Integer, Integer> threadIdMap = new ConcurrentHashMap<>();
-    private AtomicInteger threadIndexAtomic = new AtomicInteger(1);
+class JobsPool {
+    private final ConcurrentHashMap<Integer, MonitoredJob> jobsMap = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap.KeySetView<MonitoredJob, Boolean> allJobs = ConcurrentHashMap.newKeySet();
+    private final ConcurrentMap<Integer, Integer> threadIdMap = new ConcurrentHashMap<>();
+    private final AtomicInteger threadIndexAtomic = new AtomicInteger(1);
     private int totalJobsCount = 0;
     private int waitingJobsCount = 0;
     private int activeJobsCount = 0;
@@ -19,16 +20,16 @@ public class JobsPool {
     private int errorCount = 0;
     private int fatalErrorCount = 0;
 
-    private long startTime = System.currentTimeMillis();
+    private final long startTime = System.currentTimeMillis();
     private boolean allJobsFinished = false;
     private long allJobsFinishedTime = 0;
 
     public void put(int threadID, MonitoredJob monitoredJob) {
         int threadIndex;
-        if(!threadIdMap.containsKey(threadID)){
+        if (!threadIdMap.containsKey(threadID)) {
             threadIndex = threadIndexAtomic.getAndIncrement();
             threadIdMap.put(threadID, threadIndex);
-        }else{
+        } else {
             threadIndex = threadIdMap.get(threadID);
         }
         jobsMap.put(threadIndex, monitoredJob);
@@ -58,12 +59,12 @@ public class JobsPool {
             totalTime += job.getJobTime();
             errorCount += job.getErrorCount();
         }
-        if(finishedJobsCount + fatalErrorCount == allJobs.size()){
-            if(!allJobsFinished){
+        if (finishedJobsCount + fatalErrorCount == allJobs.size()) {
+            if (!allJobsFinished) {
                 allJobsFinishedTime = System.currentTimeMillis() - startTime;
             }
             allJobsFinished = true;
-        }else{
+        } else {
             allJobsFinished = false;
         }
         averageTime = totalTime / allJobs.size();
@@ -93,6 +94,7 @@ public class JobsPool {
     public int getActiveJobsCount() {
         return activeJobsCount;
     }
+
     public int getErrorCount() {
         return errorCount;
     }
@@ -100,9 +102,11 @@ public class JobsPool {
     public int getFatalErrorCount() {
         return fatalErrorCount;
     }
+
     public long getAverageTime() {
         return averageTime;
     }
+
     public String getAverageTimeFormatted() {
         return MonitoredJob.formatJobTime(averageTime);
 
@@ -121,11 +125,12 @@ public class JobsPool {
     }
 
     public String getTotalDuration() {
-        if(allJobsFinished){
+        if (allJobsFinished) {
             return MonitoredJob.formatJobTime(allJobsFinishedTime);
-        }else{
+        } else {
             return MonitoredJob.formatJobTime(System.currentTimeMillis() - startTime);
-        }}
+        }
+    }
 
 }
 

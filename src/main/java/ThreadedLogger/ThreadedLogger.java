@@ -8,18 +8,27 @@ import java.util.concurrent.locks.ReentrantLock;
 public class ThreadedLogger {
 
 
-    private JobsPool jobsPool;
-    private ExecutorService logThread = Executors.newSingleThreadExecutor();
-    private Lock lock = new ReentrantLock();
+    private final JobsPool jobsPool;
+    private final ExecutorService logThread = Executors.newSingleThreadExecutor();
+    private final Lock lock = new ReentrantLock();
 
-
+    /**
+     * Instances a threaded logger in a separate thread, with a default update delay of 300ms
+     */
     public ThreadedLogger() {
+        this(300);
+    }
+
+    /**
+     * Instances a threaded logger in a separate thread
+     */
+    public ThreadedLogger(int updateDelay) {
         jobsPool = new JobsPool();
         logThread.submit(() -> {
             try {
                 LogBuilder logBuilder = new LogBuilder();
                 while (true) {
-                    Thread.sleep(400);
+                    Thread.sleep(updateDelay);
                     lock.lock();
                     long startTime = System.currentTimeMillis();
                     System.out.println(logBuilder.buildLog(jobsPool));
@@ -35,35 +44,68 @@ public class ThreadedLogger {
     }
 
 
-    public void init(String jobName, int jobID, int taskCount) {
+    /**
+     * Initializes a new job, the taskcount is used to calculate the progress bar
+     * @param jobName the name of the job
+     * @param threadID the ID of the thread that is going to run the job
+     * @param taskCount the number of tasks in the job
+     */
+    public void init(String jobName, int threadID, int taskCount) {
         MonitoredJob monitoredThread = new MonitoredJob(jobName, taskCount);
         monitoredThread.setStateActive();
-        jobsPool.put(jobID,monitoredThread);
+        jobsPool.put(threadID, monitoredThread);
     }
 
+    /**
+     * Reports the projected total number of jobs to be run. This is used to calculate the progress bar
+     * @param totalJobs the projected number of jobs to be run
+     */
     public void reportTotalJobs(int totalJobs) {
         jobsPool.setTotalJobs(totalJobs);
     }
 
-    public void endActiveTask(int jobID) {
-        jobsPool.get(jobID).endActiveTask();
+    /**
+     * Ends the active task
+     * @param threadID the ID of the thread that is running the task
+     */
+    public void endActiveTask(int threadID) {
+        jobsPool.get(threadID).endActiveTask();
     }
 
-    public void reportError(int jobID, String errorName) {
-        jobsPool.reportError(jobID, errorName);
+    /**
+     * Reports an recoverable error that was encountered while running a task
+     * @param threadID the ID of the thread that is running the task
+     * @param errorName the name of the error that was encountered
+     */
+    public void reportError(int threadID, String errorName) {
+        jobsPool.reportError(threadID, errorName);
     }
 
-    public void reportFatalError(int jobID, String errorName) {
-        jobsPool.reportFatalError(jobID, errorName);
+    /**
+     * Reports a fatal to the logger, only use this when the error prevents the task from continuing
+     * @param threadID the ID of the thread that is running the task
+     * @param errorName the name of the error that was encountered
+     */
+    public void reportFatalError(int threadID, String errorName) {
+        jobsPool.reportFatalError(threadID, errorName);
     }
 
 
-    public void startNewTask(int jobID, String jobName) {
-        jobsPool.get(jobID).setActiveTask(jobName);
+    /**
+     * Starts a new task
+     * @param threadID the ID of the thread that is going to run the task
+     * @param jobName the name of the task that is going to be run
+     */
+    public void startNewTask(int threadID, String jobName) {
+        jobsPool.get(threadID).setActiveTask(jobName);
     }
 
-    public void setFinished(int jobID) {
-        MonitoredJob job = jobsPool.get(jobID);
+    /**
+     * Finishes a task and stops the timer
+     * @param threadID the ID of the thread that is running the task
+     */
+    public void setFinished(int threadID) {
+        MonitoredJob job = jobsPool.get(threadID);
         job.setStateFinished();
     }
 }
