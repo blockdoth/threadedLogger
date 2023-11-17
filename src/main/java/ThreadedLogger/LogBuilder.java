@@ -10,7 +10,7 @@ class LogBuilder {
     private final int columnWidth = 17;
     private final int doubleColumnWidth = 2 * columnWidth;
     private final int tripleColumnWidth = 2 * columnWidth;
-    private final int totalWidth = 2 * columnWidth + 3 * doubleColumnWidth + tripleColumnWidth + 7;
+    private final int totalWidth =  columnWidth + 4 * doubleColumnWidth + tripleColumnWidth + 7;
 
     private int prevLogLength = totalWidth * 9;
 
@@ -44,7 +44,7 @@ class LogBuilder {
     public void addHeaders() {
         appendLine(totalWidth);
         append(centerBetween("Thread number", columnDelimeter, columnWidth));
-        append(centerBetween("Job name", columnDelimeter, columnWidth));
+        append(centerBetween("Job name", columnDelimeter, doubleColumnWidth));
         append(centerBetween("Progress", columnDelimeter, tripleColumnWidth));
         append(centerBetween("Active task", columnDelimeter, doubleColumnWidth));
         append(centerBetween("Time", columnDelimeter, doubleColumnWidth));
@@ -56,7 +56,7 @@ class LogBuilder {
 
     public void addRow(MonitoredJob job) {
         append(centerBetween("Thread " + job.getOwnerThread(), columnDelimeter, columnWidth));
-        append(centerBetween(job.getJobName(), columnDelimeter, columnWidth));
+        append(centerBetween(job.getJobName(), columnDelimeter, doubleColumnWidth));
         append(centerBetween(progressBar(job.getTasksCompleted(), job.getTaskCount(), tripleColumnWidth - 8), columnDelimeter, tripleColumnWidth));
         append(centerBetween(job.getActiveTask(), columnDelimeter, doubleColumnWidth));
         append(centerBetween(job.getJobTimeFormatted(), columnDelimeter, doubleColumnWidth));

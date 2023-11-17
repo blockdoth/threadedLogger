@@ -55,15 +55,17 @@ class MonitoredJob {
         if (activeTask == null) {
             activeTask = "Encountered Fatal Error";
         } else {
-            activeTask = activeTask + "(Error)";
+            activeTask = activeTask + " (Error)";
         }
     }
 
     public void setStateFinished() {
-        this.jobState = JobState.FINISHED;
-        finishTime = System.currentTimeMillis();
-        jobTime = finishTime - jobTime;
-        activeTask = "Finished";
+        if(isActive() || isWaiting()){
+            this.jobState = JobState.FINISHED;
+            finishTime = System.currentTimeMillis();
+            jobTime = finishTime - jobTime;
+            activeTask = "Finished";
+        }
     }
 
     public boolean isWaiting() {
