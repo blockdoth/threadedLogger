@@ -9,10 +9,32 @@ permissions: # added using https://github.com/step-security/secure-workflows
   contents: read
 
 jobs:
-
   build-and-publish:
+    runs-on: ubuntu-latest
+
     permissions:
       contents: write
       packages: write
-    uses: wenqiglantz/reusable-workflows-modules/.github/workflows/java-maven-publish.yml@main
-    secrets: inherit
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'adopt'
+          java-version: '19'
+
+      - name: Build and Publish
+        run: |
+          # Your build and publish commands go here
+          # For example, Maven build and publish
+          mvn clean install
+          mvn deploy
+
+        env:
+          # Set any environment variables required for your build and publish process
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
