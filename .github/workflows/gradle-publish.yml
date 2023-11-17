@@ -31,7 +31,7 @@ jobs:
           # Your build and publish commands go here
           # For example, Maven build and publish
           mvn clean install
-          mvn deploy
+          mvn deploy -e -X
 
         env:
           # Set any environment variables required for your build and publish process
