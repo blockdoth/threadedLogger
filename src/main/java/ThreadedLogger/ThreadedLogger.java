@@ -12,6 +12,7 @@ public class ThreadedLogger {
     private String globalLog = "Log";
     private final ExecutorService logThread = Executors.newSingleThreadExecutor();
     private final Lock lock = new ReentrantLock();
+    private boolean running = true;
 
     /**
      * Instances a threaded logger in a separate thread, with a default update delay of 300ms
@@ -26,9 +27,10 @@ public class ThreadedLogger {
     public ThreadedLogger(int updateDelay) {
         jobsPool = new JobsPool();
         logThread.submit(() -> {
+
             try {
                 LogBuilder logBuilder = new LogBuilder();
-                while (true) {
+                while (running) {
                     if(jobsPool.isEmpty()){
                         Thread.sleep(100);
                         continue;
@@ -65,7 +67,7 @@ public class ThreadedLogger {
      * Quits the logger
      */
     public void quit() {
-        logThread.shutdown();
+        running = false;
     }
 
     /**

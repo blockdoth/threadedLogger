@@ -21,5 +21,6 @@ public class Main {
         }
         JobRunner jobRunner = new JobRunner(logger, threadCount,minTasks, maxTasks, minTimePerTask,maxTimePerTask);
         jobRunner.runTasks(totalTasks);
+
     }
 }
