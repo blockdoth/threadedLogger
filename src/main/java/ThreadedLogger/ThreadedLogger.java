@@ -62,6 +62,13 @@ public class ThreadedLogger {
     }
 
     /**
+     * Quits the logger
+     */
+    public void quit() {
+        logThread.shutdown();
+    }
+
+    /**
      * Reports the projected total number of jobs to be run. This is used to calculate the progress bar
      * @param totalJobs the projected number of jobs to be run
      */
