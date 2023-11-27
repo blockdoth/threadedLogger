@@ -54,4 +54,11 @@ public class LocalLogger {
     public void finish() {
         threadedLogger.finish(threadID);
     }
+
+    /**
+     * Quits the global logger
+     */
+    public void quit() {
+        threadedLogger.quit();
+    }
 }
